@@ -20,8 +20,7 @@ A bash script to ease the set up of a **Project Zomboid server** on ARM64 device
 - Default server takes 8GB of RAM.
 - This script opens ports 16261 and 16262 UDP on your firewall but you still need to forward them in the oracle cloud console for your vm instance.
 - Notice we are using /opt/zomboid-server as a dir but zomboid's starting script will generate files in the homedir of the user. Files will be split in two directories but are accessible through 
-  symlinks from a single place. 
-  set startup parameters.
+  symlinks from a single place to easily set startup parameters.
 - I recommend using tmux or screen during the process if you're on a single SSH session.
 
 ## 🚀 Quick Start
