@@ -16,7 +16,7 @@ A bash script to ease the set up of a **Project Zomboid server** on ARM64 device
 ## ⚠️ Important
 - The first time you run the server it must be manually launching it from start-server.sh.
 - It will create the necessary files and folders and ask you to set up an admin password to access the server.
-- After that you can just shut it down and use "systemctl enable zomboid-server" and "systemctl start zomboid-server" to run it. 
+- After that you can just shut it down and run it like a systemd service. 
 - Default server takes 8GB of RAM.
 - This script opens ports 16261 and 16262 UDP on your firewall but you still need to forward them in the oracle cloud console for your vm instance.
 - Notice we are using /opt/zomboid-server as a dir but zomboid's starting script will generate files in the homedir of the user. Files will be split in two directories but are accessible through 
