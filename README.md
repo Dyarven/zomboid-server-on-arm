@@ -25,22 +25,22 @@ A bash script to ease the set up of a **Project Zomboid server** on ARM64 device
 
 ## 🚀 Quick Start
 
-### 1.Clone the Repository
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/Dyarven/Zomboid-Server-on-ARM.git
 cd Zomboid-Server-on-ARM
 ```
-### 2.Run the Script
+### 2. Run the Script
 ```bash
 chmod +x arm64_zomboid_server.sh
 sh arm64_zomboid_server.sh
 ```
-### 3.When the script promtps you to, on another terminal run the server for the first time and set a password. When finished, shut it down.
+### 3. When the script promtps you to, on another terminal run the server for the first time and set a password. When finished, shut it down.
 ```bash
 cd /opt/zomboid-server && sh start-server.sh
 ```
-### 4.Go back to the first terminal and finish running my script.
+### 4. Go back to the first terminal and finish running my script.
 
-### 5.Done! The server should automatically start as a systemd service.
+### 5. Done! The server should automatically start as a systemd service.
 
 
