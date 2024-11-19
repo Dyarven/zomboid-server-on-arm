@@ -13,7 +13,7 @@ A bash script to ease the set up of a **Project Zomboid server** on ARM64 device
 - **ARM64 Compatible:** Specifically designed for ARM-based platforms.
 - **Lightweight & Efficient:** Ensures minimal resource usage for smooth performance.
 
-## ⚠️ IMPORTANT
+## ⚠️ Important
 - The first time you run the server it must be manually launching it from start-server.sh.
 - It will create the necessary files and folders and ask you to set up an admin password to access the server.
 - After that you can just shut it down and use "systemctl enable zomboid-server" and "systemctl start zomboid-server" to run it. 
