@@ -60,3 +60,10 @@ EOL
 
 sudo systemctl daemon-reload
 source /usr/share/bash-completion/completions/systemctl
+
+ # open firewall ports
+sudo ufw allow 16261/udp
+sudo ufw allow 16262/udp
+
+# reload the firewall
+sudo ufw reload
