@@ -22,6 +22,7 @@ A bash script to ease the set up of a **Project Zomboid server** on ARM64 device
 - Notice we are using /opt/zomboid-server as a dir but zomboid's starting script will generate files in the homedir of the user. Files will be split in two directories but are accessible through 
   symlinks from a single place. 
   set startup parameters.
+- I recommend using tmux or screen during the process if you're on a single SSH session.
 
 ## 🚀 Quick Start
 
