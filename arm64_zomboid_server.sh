@@ -8,6 +8,13 @@ sudo apt install -y git build-essential cmake gcc-arm-linux-gnueabihf openjdk-19
 sudo dpkg --add-architecture armhf && sudo apt update
 sudo apt install -y libc6:armhf libncurses5:armhf libstdc++6:armhf
 
+ # open firewall ports
+sudo ufw allow 16261/udp
+sudo ufw allow 16262/udp
+
+# reload the firewall
+sudo ufw reload
+
 # clone and build Box86
 git clone https://github.com/ptitSeb/box86
 cd box86 && mkdir -p build && cd build
@@ -61,10 +68,4 @@ EOL
 
 sudo systemctl daemon-reload
 source /usr/share/bash-completion/completions/systemctl
-
- # open firewall ports
-sudo ufw allow 16261/udp
-sudo ufw allow 16262/udp
-
-# reload the firewall
-sudo ufw reload
+sudo systemctl enable zomboid-server && sudo systemctl start zomboid-server
