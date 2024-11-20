@@ -8,11 +8,9 @@ sudo apt install -y git build-essential cmake gcc-arm-linux-gnueabihf openjdk-19
 sudo dpkg --add-architecture armhf && sudo apt update
 sudo apt install -y libc6:armhf libncurses5:armhf libstdc++6:armhf
 
- # open firewall ports
+ # open firewall ports and reload the fw
 sudo ufw allow 16261/udp
 sudo ufw allow 16262/udp
-
-# reload the firewall
 sudo ufw reload
 
 # clone and build Box86
