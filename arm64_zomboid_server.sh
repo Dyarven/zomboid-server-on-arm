@@ -43,8 +43,8 @@ sudo mkdir -p /opt/zomboid-server/
 sudo chown -R $USER:$USER /opt/zomboid-server/
 ./steamcmd.sh +@sSteamCmdForcePlatformType linux +login anonymous +force_install_dir /opt/zomboid-server/ +app_update 380870 validate +quit > /dev/null
 
-# create symlinks for the files on the home of the user so that we can access it all from our server folder
 read -p "Please start the server manually and set the password. Press Enter when that's done..."
+# create symlinks for the files on the home of the user so that we can access it all from our server folder
 find ~ -type f -mmin -60 -exec ln -s {} /opt/zomboid-server/ \;
 find ~ -type d -mmin -60 -exec ln -s {} /opt/zomboid-server/ \;
 
