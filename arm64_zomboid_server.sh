@@ -2,7 +2,7 @@
 
 # install java / dependencies
 sudo apt update && sudo apt full-upgrade -y
-sudo apt install -y git build-essential cmake gcc-arm-linux-gnueabihf openjdk-19-jdk
+sudo apt install -y git build-essential cmake gcc-arm-linux-gnueabihf openjdk-21-jdk
 
 # enable arm hard float architecture / install dependencies
 sudo dpkg --add-architecture armhf && sudo apt update
