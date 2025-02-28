@@ -1,4 +1,4 @@
-# 🧟‍♂️ Zomboid Server on ARM 🎮
+# 🧟‍♂️ Zomboid Server on ARM
 
 [![Star this repo](https://img.shields.io/github/stars/Dyarven/Zomboid-Server-on-ARM?style=social)](https://github.com/Dyarven/Zomboid-Server-on-ARM/stargazers)
 [![Follow me](https://img.shields.io/github/followers/Dyarven?style=social)](https://github.com/Dyarven)
