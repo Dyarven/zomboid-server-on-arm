@@ -23,7 +23,7 @@ A bash script to ease the set up of a **Project Zomboid server** on ARM64 device
   symlinks from a single place to easily set startup parameters.
 - I recommend using tmux or screen during the process if you're on a single SSH session.
 
-## 🚀 Quick Start
+## 🚀 Setup guide
 
 ### 1. Clone the Repository
 ```bash
