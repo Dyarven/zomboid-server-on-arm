@@ -8,12 +8,12 @@ A bash script to ease the set up of a **Project Zomboid server** on ARM64 device
 
 ---
 
-## 🛠 Features
+## Features
 - **Automated Setup:** Installs everything you need for a functioning Zomboid server.
 - **ARM64 Compatible:** Specifically designed for ARM-based platforms.
 - **Lightweight & Efficient:** Ensures minimal resource usage for smooth performance.
 
-## 🚨 Important things to know
+## Important things to know
 - The first time you run the server it must be manually launching it from start-server.sh.
 - It will create the necessary files and folders and ask you to set up an admin password to access the server.
 - After that you can just shut it down and run it like a systemd service. 
@@ -23,7 +23,7 @@ A bash script to ease the set up of a **Project Zomboid server** on ARM64 device
   symlinks from a single place to easily set startup parameters.
 - I recommend using tmux or screen during the process if you're on a single SSH session.
 
-## 🖥️ Setup guide
+## Setup guide
 
 ### 1. Clone the Repository
 ```bash
