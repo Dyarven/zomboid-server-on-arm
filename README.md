@@ -4,7 +4,7 @@
 [![Follow me](https://img.shields.io/github/followers/Dyarven?style=social)](https://github.com/Dyarven)
 [![License](https://img.shields.io/github/license/Dyarven/Zomboid-Server-on-ARM)](https://github.com/Dyarven/Zomboid-Server-on-ARM/blob/main/LICENSE)
 
-A bash script to ease the set up of a **Project Zomboid server** on ARM64 devices like Raspberry Pi or OCI Ampere Arm-based cloud instances.
+A bash script to ease the set up of a **Project Zomboid server** on ARM64 devices like Raspberry Pi or OCI Ampere Arm-based cloud instances using an emulation layer.
 
 ---
 
