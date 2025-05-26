@@ -1,8 +1,8 @@
 # 🧟‍♂️ Zomboid Server on ARM
 
-[![Star this repo](https://img.shields.io/github/stars/Dyarven/Zomboid-Server-on-ARM?style=social)](https://github.com/Dyarven/Zomboid-Server-on-ARM/stargazers)
+[![Star this repo](https://img.shields.io/github/stars/Dyarven/zomboid-server-on-arm?style=social)](https://github.com/Dyarven/zomboid-server-on-arm/stargazers)
 [![Follow me](https://img.shields.io/github/followers/Dyarven?style=social)](https://github.com/Dyarven)
-[![License](https://img.shields.io/github/license/Dyarven/Zomboid-Server-on-ARM)](https://github.com/Dyarven/Zomboid-Server-on-ARM/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/Dyarven/zomboid-server-on-arm)](https://github.com/Dyarven/zomboid-server-on-arm/blob/main/LICENSE)
 
 A bash script to ease the set up of a **Project Zomboid server** on ARM64 devices like Raspberry Pi or OCI Ampere Arm-based cloud instances using an emulation layer.
 
