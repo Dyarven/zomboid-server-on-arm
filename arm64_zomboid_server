@@ -13,15 +13,6 @@ sudo ufw allow 16261/udp
 sudo ufw allow 16262/udp
 sudo ufw reload
 
-# Clone and build Box86
-git clone https://github.com/ptitSeb/box86
-cd box86 && mkdir -p build && cd build
-cmake .. -DRPI4ARM64=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo
-make -j$(nproc)
-sudo make install
-sudo systemctl restart systemd-binfmt
-cd ../..
-
 # Clone and build Box64
 git clone https://github.com/ptitSeb/box64.git
 cd box64 && mkdir -p build && cd build
@@ -34,7 +25,6 @@ cd ../..
 # Steamcmd setup
 mkdir steamcmd && cd steamcmd
 curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
-
 # Update steamcmd
 ./steamcmd.sh +quit > /dev/null
 
@@ -43,22 +33,28 @@ sudo mkdir -p /opt/zomboid-server/
 sudo chown -R $USER:$USER /opt/zomboid-server/
 ./steamcmd.sh +force_install_dir /opt/zomboid-server/ +@sSteamCmdForcePlatformType linux +login anonymous +app_update 380870 -beta unstable validate +quit > /dev/null
 
+# Fix up some dependencies and paths for server files
+sudo ln -sf /opt/zomboid-server/linux64/steamclient.so /opt/zomboid-server/linux64/libsteam.so
+sudo sed -i 's|LD_PRELOAD="${LD_PRELOAD}:${JSIG}" ./ProjectZomboid64 "$@"|LD_PRELOAD="${LD_PRELOAD}:${JSIG}" ./ProjectZomboid64 -cachedir=/opt/zomboid-server "$@"|' /opt/zomboid-server/start-server.sh
+
+# Prompt user for manual config
 read -p "Please start the server manually and set the password. Press Enter when that's done..."
-# Create symlinks for the files on the home of the user so that we can access it all from our server folder
-find ~ -type f -mmin -60 -exec ln -s {} /opt/zomboid-server/ \;
-find ~ -type d -mmin -60 -exec ln -s {} /opt/zomboid-server/ \;
 
 # Set up zomboid as a systemd service
-sudo tee /etc/systemd/system/zomboid-server.service > /dev/null <<EOL
+sudo tee /etc/systemd/system/zomboid-server.service > /dev/null <<'EOL'
 [Unit]
-Description=Servidor de Zomboid
+Description=Project Zomboid Server
 After=network.target
 
 [Service]
-User=$(whoami)
+User=root
 WorkingDirectory=/opt/zomboid-server
+
+# IMPORTANT: force data directory + prevent LD_PRELOAD issues
+
 ExecStart=/opt/zomboid-server/start-server.sh
 Restart=always
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
