@@ -13,7 +13,7 @@ sudo ufw allow 16261/udp
 sudo ufw allow 16262/udp
 sudo ufw reload
 
-# Clone and build Box86
+# Clone and build Box86 (emulation for steamcmd)
 git clone https://github.com/ptitSeb/box86
 cd box86 && mkdir -p build && cd build
 cmake .. -DRPI4ARM64=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo
@@ -23,7 +23,7 @@ sudo cp box32 /usr/local/bin/
 sudo systemctl restart systemd-binfmt
 cd ../..
 
-# Clone and build Box64
+# Clone and build Box64 (emulation for zomboid)
 git clone https://github.com/ptitSeb/box64.git
 cd box64 && mkdir -p build && cd build
 cmake .. -DRPI4ARM64=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo
