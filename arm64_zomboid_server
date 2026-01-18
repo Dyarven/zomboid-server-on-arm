@@ -52,13 +52,13 @@ sudo sed -i 's|LD_PRELOAD="${LD_PRELOAD}:${JSIG}" ./ProjectZomboid64 "$@"|LD_PRE
 read -p "Please start the server manually and set the password. Press Enter when that's done..."
 
 # Set up zomboid as a systemd service
-sudo tee /etc/systemd/system/zomboid-server.service > /dev/null <<'EOL'
+sudo tee /etc/systemd/system/zomboid-server.service > /dev/null <<EOL
 [Unit]
 Description=Project Zomboid Server
 After=network.target
 
 [Service]
-User=root
+User=$(whoami)
 WorkingDirectory=/opt/zomboid-server
 
 # IMPORTANT: force data directory + prevent LD_PRELOAD issues
