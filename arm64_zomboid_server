@@ -66,7 +66,7 @@ Environment="LD_LIBRARY_PATH=/opt/zomboid-server/linux64:/opt/zomboid-server/nat
 Environment="BOX64_JVM=1"
 Environment="BOX64_DYNAREC_BIGBLOCK=0"
 Environment="BOX64_DYNAREC_STRONGMEM=1"
-ExecStart=/usr/local/bin/box64 /opt/zomboid-server/jre64/bin/java -Djava.awt.headless=true -Xms4g -Xmx12g -XX:ActiveProcessorCount=4 -Dzomboid.steam=1 -Dzomb>
+ExecStart=/usr/local/bin/box64 /opt/zomboid-server/jre64/bin/java -Djava.awt.headless=true -Xms4g -Xmx16g -XX:ActiveProcessorCount=4 -Dzomboid.steam=1 -Dzomboid.znetlog=1 -Djava.library.path=linux64/:natives/ -Djava.security.egd=file:/dev/urandom -XX:+UseSerialGC -XX:-UseCompressedOops -XX:TieredStopAtLevel=1 -cp "java/:java/projectzomboid.jar" zombie.network.GameServer
 
 Restart=always
 RestartSec=10
