@@ -39,7 +39,10 @@ curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.g
 # Update steamcmd
 ./steamcmd.sh +quit > /dev/null
 
-# Set up and download zomboid server
+
+############################################################################################
+#################### download and install zomboid server version ####################
+############################################################################################
 sudo mkdir -p /opt/zomboid-server/
 sudo chown -R $USER:$USER /opt/zomboid-server/
 
@@ -58,6 +61,9 @@ else
     echo "installing current release"
     ./steamcmd.sh +force_install_dir /opt/zomboid-server/ +@sSteamCmdForcePlatformType linux +login anonymous +app_update 380870 validate +quit > /dev/null
 fi
+############################################################################################
+############################################################################################
+
 
 # Prompt user for manual config
 read -p "Please start the server manually and set the password. Press Enter when that's done..."
