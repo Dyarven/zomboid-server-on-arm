@@ -48,9 +48,9 @@ sudo ln -sf /opt/zomboid-server/linux64/steamclient.so /opt/zomboid-server/linux
 sudo sed -i 's|LD_PRELOAD="${LD_PRELOAD}:${JSIG}" ./ProjectZomboid64 "$@"|LD_PRELOAD="${LD_PRELOAD}:${JSIG}" ./ProjectZomboid64 -cachedir=/opt/zomboid-server "$@"|' /opt/zomboid-server/start-server.sh
 
 # Let the user define which zomboid version to install
-read -p "Run a beta branch? (y/n) otherwise, current release will be used: " use_beta
+read -p "do you want to run a beta branch? (y/n) otherwise, current release will be used: " use_beta
 if [[ "$use_beta" =~ ^[Yy]$ ]]; then
-    read -p 'Please specify the version (i.e., 42.13.0), otherwise "unstable" will be used: ' beta_version
+    read -p 'Please specify the version (i.e. 42.13.0), otherwise "unstable" will be used: ' beta_version
     beta_version=${beta_version:-unstable}
     echo "installing beta $beta_version"
     ./steamcmd.sh +force_install_dir /opt/zomboid-server/ +@sSteamCmdForcePlatformType linux +login anonymous +app_update 380870 -beta "$beta_version" validate +quit > /dev/null
