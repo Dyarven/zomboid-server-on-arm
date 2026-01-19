@@ -9,9 +9,9 @@ A bash script to ease the set up of a **Project Zomboid server** on ARM64 device
 ---
 
 ## Features
-- **Automated Setup:** Installs everything you need for a functioning Zomboid server.
-- **ARM64 Compatible:** Specifically designed for ARM-based platforms.
-- **Lightweight & Efficient:** Ensures minimal resource usage for smooth performance.
+- **Automated Setup:** Installs everything you need for a functioning Zomboid server set up as a systemd service.
+- **ARM64 Compatible:** Sets up emulation with Box86 and Box64 for both SteamCMD and Zomboid.
+- **Version Selection:** You can specify the release of Project Zomboid you want to install (including beta branches).
 
 ## Important things to know
 - The first time you run the server it must be manually launching it from start-server.sh.
