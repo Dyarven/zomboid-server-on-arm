@@ -42,11 +42,11 @@ curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.g
 # Set up and download zomboid server
 sudo mkdir -p /opt/zomboid-server/
 sudo chown -R $USER:$USER /opt/zomboid-server/
-./steamcmd.sh +force_install_dir /opt/zomboid-server/ +@sSteamCmdForcePlatformType linux +login anonymous +app_update 380870 -beta unstable validate +quit > /dev/null
 
 # Fix up some dependencies and paths for server files
 sudo ln -sf /opt/zomboid-server/linux64/steamclient.so /opt/zomboid-server/linux64/libsteam.so
 sudo sed -i 's|LD_PRELOAD="${LD_PRELOAD}:${JSIG}" ./ProjectZomboid64 "$@"|LD_PRELOAD="${LD_PRELOAD}:${JSIG}" ./ProjectZomboid64 -cachedir=/opt/zomboid-server "$@"|' /opt/zomboid-server/start-server.sh
+./steamcmd.sh +force_install_dir /opt/zomboid-server/ +@sSteamCmdForcePlatformType linux +login anonymous +app_update 380870 validate +quit > /dev/null
 
 # Prompt user for manual config
 read -p "Please start the server manually and set the password. Press Enter when that's done..."
