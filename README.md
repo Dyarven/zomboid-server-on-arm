@@ -16,14 +16,14 @@ A bash script to ease the set up of a **Project Zomboid server** on ARM64 device
 ## Important things to know
 - The first time you run the server it must be manually launching it from start-server.sh.
 - It will create the necessary files and folders and ask you to set up an admin password to access the server. _-> You could theoretically automate this by setting a custom servername and providing an ini file, but since this is a PoC and often unstable, I'd rather not skip this manual step._
-- After that you can just shut it down and run it like a systemd service. 
+- After that you can just shut it down and run it like a systemd service.
 - Default server takes 8GB of RAM.
 - This script opens ports 16261 and 16262 UDP on your firewall but you still need to forward them in the oracle cloud console for your vm instance.
 - Notice we are using /opt/zomboid-server as a dir but zomboid's starting script will generate files in the homedir of the user. Files will be split in two directories but are accessible through 
   symlinks from a single place to easily set startup parameters.
 - I recommend using tmux or screen during the process if you're on a single SSH session.
 
-## Setup guide
+## Setup guide step by step
 
 ### 1. Clone the Repository
 ```bash
@@ -35,12 +35,16 @@ cd Zomboid-Server-on-ARM
 chmod +x arm64_zomboid_server
 bash arm64_zomboid_server
 ```
-### 3. When the script promtps you to, on another terminal run the server for the first time and set a password. When finished, shut it down.
+### 3. When the script promtps you to, on another terminal (don't close this one), run the server for the first time and set a password. When finished, shut it down and check that you correctly kill the process.
 ```bash
 cd /opt/zomboid-server && sh start-server
 ```
-### 4. Go back to the first terminal and finish running my script.
+### 4. Go back to the first terminal and finish running the script.
 
-### 5. Done! The server should automatically start as a systemd service.
+### 5. Done! The server should automatically start as a systemd service. You can validate and check the logs with
+```bash
+systemctl status zomboid-server
+journalctl -xeu zomboid-server --follow
+```
 
 
