@@ -14,7 +14,7 @@ A bash script to ease the set up of a **Project Zomboid server** on ARM64 device
 - **Version Selection:** You can specify the release of Project Zomboid you want to install (including beta branches).
 
 ## Important things to know
-- Ideally you'd create a "Zomboid" user and run the script/service as that user.
+- Ideally you'd create a **"zomboid"** user and run the script/service as that user.
 - The first time you run the server it must be manually launching it from start-server.sh.
 - It will create the necessary files and folders and ask you to set up an admin password to access the server. _-> You could theoretically automate this by setting a custom servername and providing an ini file, but since this is a PoC and often unstable, I'd rather not skip this manual step._
 - After that you can just shut it down and run it like a systemd service.
