@@ -66,7 +66,7 @@ fi
 
 
 # Prompt user for manual config
-read -p "Please start the server manually and set the password. Press Enter when that's done..."
+read -p "Please, without interrupting this script, start the server manually in another terminal and set the password. Press Enter when that's done..."
 
 # Set up zomboid as a systemd service
 sudo tee /etc/systemd/system/zomboid-server.service > /dev/null <<EOL
