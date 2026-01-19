@@ -13,52 +13,63 @@ sudo ufw allow 16261/udp
 sudo ufw allow 16262/udp
 sudo ufw reload
 
-# Clone and build Box86
+# Clone and build Box86 (emulation for steamcmd)
 git clone https://github.com/ptitSeb/box86
 cd box86 && mkdir -p build && cd build
 cmake .. -DRPI4ARM64=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo
 make -j$(nproc)
 sudo make install
+sudo cp box32 /usr/local/bin/
 sudo systemctl restart systemd-binfmt
 cd ../..
 
-# Clone and build Box64
+# Clone and build Box64 (emulation for zomboid)
 git clone https://github.com/ptitSeb/box64.git
 cd box64 && mkdir -p build && cd build
 cmake .. -DRPI4ARM64=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo
 make -j$(nproc)
 sudo make install
+sudo cp box64 /usr/local/bin/
 sudo systemctl restart systemd-binfmt
 cd ../..
 
 # Steamcmd setup
 mkdir steamcmd && cd steamcmd
 curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
-
 # Update steamcmd
 ./steamcmd.sh +quit > /dev/null
 
 # Set up and download zomboid server
 sudo mkdir -p /opt/zomboid-server/
 sudo chown -R $USER:$USER /opt/zomboid-server/
+
+# Fix up some dependencies and paths for server files
+sudo ln -sf /opt/zomboid-server/linux64/steamclient.so /opt/zomboid-server/linux64/libsteam.so
+sudo sed -i 's|LD_PRELOAD="${LD_PRELOAD}:${JSIG}" ./ProjectZomboid64 "$@"|LD_PRELOAD="${LD_PRELOAD}:${JSIG}" ./ProjectZomboid64 -cachedir=/opt/zomboid-server "$@"|' /opt/zomboid-server/start-server.sh
 ./steamcmd.sh +force_install_dir /opt/zomboid-server/ +@sSteamCmdForcePlatformType linux +login anonymous +app_update 380870 validate +quit > /dev/null
 
+# Prompt user for manual config
 read -p "Please start the server manually and set the password. Press Enter when that's done..."
-# Create symlinks for the files on the home of the user so that we can access it all from our server folder
-find ~ -type f -mmin -60 -exec ln -s {} /opt/zomboid-server/ \;
-find ~ -type d -mmin -60 -exec ln -s {} /opt/zomboid-server/ \;
 
 # Set up zomboid as a systemd service
 sudo tee /etc/systemd/system/zomboid-server.service > /dev/null <<EOL
 [Unit]
-Description=Servidor de Zomboid
+Description=Project Zomboid Server
 After=network.target
 
 [Service]
 User=$(whoami)
 WorkingDirectory=/opt/zomboid-server
-ExecStart=/opt/zomboid-server/start-server.sh
+
+# IMPORTANT: force data directory + prevent LD_PRELOAD issues
+Environment="LD_LIBRARY_PATH=/opt/zomboid-server/linux64:/opt/zomboid-server/natives:/opt/zomboid-server/jre64/lib:."
+Environment="BOX64_JVM=1"
+Environment="BOX64_DYNAREC_BIGBLOCK=0"
+Environment="BOX64_DYNAREC_STRONGMEM=1"
+ExecStart=/usr/local/bin/box64 /opt/zomboid-server/jre64/bin/java -Djava.awt.headless=true -Xms4g -Xmx16g -XX:ActiveProcessorCount=4 -Dzomboid.steam=1 -Dzomboid.znetlog=1 -Djava.library.path=linux64/:natives/ -Djava.security.egd=file:/dev/urandom -XX:+UseSerialGC -XX:-UseCompressedOops -XX:TieredStopAtLevel=1 -cp "java/:java/projectzomboid.jar" zombie.network.GameServer
+
 Restart=always
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
