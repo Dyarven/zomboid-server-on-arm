@@ -17,7 +17,7 @@ A bash script to ease the set up of a **Project Zomboid server** on ARM64 device
 - Ideally you'd create a **"zomboid"** user and run the script/service as that user.
 - The first time you run the actual zomboid server must be manually launching it with `start-server.sh`. Once you launch my setup script and it reaches that point, it will tell you to do so. 
   - `start_server.sh` will eventually ask you to set up an admin password to access the server. _-> You could theoretically automate this by setting a custom servername and providing an ini file, but since this is a PoC and often unstable, I'd rather not skip this manual step._
-  - Once that is done, you can just shut the server down, continue running my script and once all is done, it will start automatically as a systemd service.
+  - Once that is done, you can just shut the server down, continue running my script and once its finished, zomboid will start automatically as a systemd service.
 - This script opens ports 16261 and 16262 UDP on your firewall but you still need to forward them in the oracle cloud console for your vm instance.
 
 
