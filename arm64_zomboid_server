@@ -48,6 +48,7 @@ sudo chown -R $USER:$USER /opt/zomboid-server/
 
 # Fix up some dependencies and paths for server files
 sudo ln -sf /opt/zomboid-server/linux64/steamclient.so /opt/zomboid-server/linux64/libsteam.so
+sed -i 's|LD_PRELOAD="${LD_PRELOAD}:${JSIG}" ./ProjectZomboid64 "$@"|LD_PRELOAD="${LD_PRELOAD}:${JSIG}" ./ProjectZomboid64 -cachedir=/opt/zomboid-server "$@"|' /opt/zomboid-server/start-server.sh
 
 # Let the user define which zomboid version to install
 read -p "do you want to run a beta branch? (y/n) otherwise, current release will be used: " use_beta
