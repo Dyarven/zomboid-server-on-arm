@@ -31,7 +31,7 @@ cd Zomboid-Server-on-ARM
 ### 2. Run the Script
 ```bash
 chmod +x arm64_zomboid_server
-bash arm64_zomboid_server
+sudo bash arm64_zomboid_server
 ```
 ### 3. When the script promtps you to, on another terminal (don't close this one), run the server for the first time and set a password. When finished, shut it down and check that you correctly kill the process.
 ```bash
