@@ -1,29 +1,26 @@
 #!/bin/bash
-groupadd zomboid
-useradd -r -g zomboid -d /opt/zomboid -s /usr/sbin/nologin zomboid
-mkdir /opt/zomboid
 
 # Install java / dependencies
-sudo apt update && sudo apt full-upgrade -y
-sudo apt install -y git build-essential cmake gcc-arm-linux-gnueabihf openjdk-21-jdk
+apt update && sudo apt full-upgrade -y
+apt install -y git build-essential cmake gcc-arm-linux-gnueabihf openjdk-21-jdk
 
 # Enable ARM hard float architecture / install dependencies
-sudo dpkg --add-architecture armhf && sudo apt update
-sudo apt install -y libc6:armhf libncurses5:armhf libstdc++6:armhf
+dpkg --add-architecture armhf && sudo apt update
+apt install -y libc6:armhf libncurses5:armhf libstdc++6:armhf
 
- # Open firewall ports and reload the fw
-sudo ufw allow 16261/udp
-sudo ufw allow 16262/udp
-sudo ufw reload
+# Open firewall ports and reload the fw
+ufw allow 16261/udp
+ufw allow 16262/udp
+ufw reload
 
 # Clone and build Box86 (emulation for steamcmd)
 git clone https://github.com/ptitSeb/box86
 cd box86 && mkdir -p build && cd build
 cmake .. -DRPI4ARM64=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo
 make -j$(nproc)
-sudo make install
-sudo cp box32 /usr/local/bin/
-sudo systemctl restart systemd-binfmt
+make install
+cp box32 /usr/local/bin/
+systemctl restart systemd-binfmt
 cd ../..
 
 # Clone and build Box64 (emulation for zomboid)
@@ -31,9 +28,9 @@ git clone https://github.com/ptitSeb/box64.git
 cd box64 && mkdir -p build && cd build
 cmake .. -DRPI4ARM64=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo
 make -j$(nproc)
-sudo make install
-sudo cp box64 /usr/local/bin/
-sudo systemctl restart systemd-binfmt
+make install
+cp box64 /usr/local/bin/
+systemctl restart systemd-binfmt
 cd ../..
 
 # Steamcmd setup
@@ -46,8 +43,7 @@ curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.g
 ############################################################################################
 #################### download and install zomboid server version ####################
 ############################################################################################
-# Fix up some dependencies and paths for server files
-sudo ln -sf /opt/zomboid/linux64/steamclient.so /opt/zomboid/linux64/libsteam.so
+mkdir -p /opt/zomboid-server
 
 # Let the user define which zomboid version to install
 read -p "do you want to run a beta branch? (y/n) otherwise, current release will be used: " use_beta
@@ -55,10 +51,10 @@ if [[ "$use_beta" =~ ^[Yy]$ ]]; then
     read -p 'Please specify the version (i.e. 42.13.3), otherwise "unstable" will be used: ' beta_version
     beta_version=${beta_version:-unstable}
     echo "installing beta $beta_version"
-    ./steamcmd.sh +force_install_dir /opt/zomboid/ +@sSteamCmdForcePlatformType linux +login anonymous +app_update 380870 -beta "$beta_version" validate +quit > /dev/null
+    ./steamcmd.sh +force_install_dir /opt/zomboid-server/ +@sSteamCmdForcePlatformType linux +login anonymous +app_update 380870 -beta "$beta_version" validate +quit > /dev/null
 else
     echo "installing current release"
-    ./steamcmd.sh +force_install_dir /opt/zomboid/ +@sSteamCmdForcePlatformType linux +login anonymous +app_update 380870 validate +quit > /dev/null
+    ./steamcmd.sh +force_install_dir /opt/zomboid-server/ +@sSteamCmdForcePlatformType linux +login anonymous +app_update 380870 validate +quit > /dev/null
 fi
 ############################################################################################
 ############################################################################################
@@ -66,26 +62,26 @@ fi
 # Prompt user for manual config
 read -p "Please, without interrupting this script, start the server manually in another terminal and set the password. Press Enter when that's done..."
 
-# set up permissions
-chown -R zomboid:zomboid /opt/zomboid/
+# Fix up some dependencies and paths for server files
+ln -sf /opt/zomboid-server/linux64/steamclient.so /opt/zomboid-server/linux64/libsteam.so
+ln -s /root/Zomboid/* /opt/zomboid-server/ # Had to keep this, because -cache-dir flag gives issues
 
 # Set up zomboid as a systemd service
-sudo tee /etc/systemd/system/zomboid-server.service > /dev/null <<EOL
+tee /etc/systemd/system/zomboid-server.service > /dev/null <<EOL
 [Unit]
 Description=Project Zomboid Server
 After=network.target
 
 [Service]
-User=zomboid
-Group=zomboid
-WorkingDirectory=/opt/zomboid/
+User=$(whoami)
+WorkingDirectory=/opt/zomboid-server/
 
 # IMPORTANT: force data directory + prevent LD_PRELOAD issues
-Environment="LD_LIBRARY_PATH=/opt/zomboid/linux64:/opt/zomboid-server/natives:/opt/zomboid/jre64/lib:."
+Environment="LD_LIBRARY_PATH=/opt/zomboid-server/linux64:/opt/zomboid-server/natives:/opt/zomboid-server/jre64/lib:."
 Environment="BOX64_JVM=1"
 Environment="BOX64_DYNAREC_BIGBLOCK=0"
 Environment="BOX64_DYNAREC_STRONGMEM=1"
-ExecStart=/usr/local/bin/box64 /opt/zomboid/jre64/bin/java -Djava.awt.headless=true -Xms4g -Xmx16g -XX:ActiveProcessorCount=4 -Dzomboid.steam=1 -Dzomboid.znetlog=1 -Djava.library.path=linux64/:natives/ -Djava.security.egd=file:/dev/urandom -XX:+UseSerialGC -XX:-UseCompressedOops -XX:TieredStopAtLevel=1 -cp "java/:java/projectzomboid.jar" zombie.network.GameServer
+ExecStart=/usr/local/bin/box64 /opt/zomboid-server/jre64/bin/java -Djava.awt.headless=true -Xms4g -Xmx16g -XX:ActiveProcessorCount=4 -Dzomboid.steam=1 -Dzomboid.znetlog=1 -Djava.library.path=linux64/:natives/ -Djava.security.egd=file:/dev/urandom -XX:+UseSerialGC -XX:-UseCompressedOops -XX:TieredStopAtLevel=1 -cp "java/:java/projectzomboid.jar" zombie.network.GameServer
 
 Restart=always
 RestartSec=10
@@ -94,6 +90,6 @@ RestartSec=10
 WantedBy=multi-user.target
 EOL
 
-sudo systemctl daemon-reload
+systemctl daemon-reload
 source /usr/share/bash-completion/completions/systemctl
-sudo systemctl enable zomboid-server && sudo systemctl start zomboid-server
+systemctl enable zomboid-server && sudo systemctl start zomboid-server
