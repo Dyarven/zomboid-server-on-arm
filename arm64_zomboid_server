@@ -48,7 +48,6 @@ sudo chown -R $USER:$USER /opt/zomboid-server/
 
 # Fix up some dependencies and paths for server files
 sudo ln -sf /opt/zomboid-server/linux64/steamclient.so /opt/zomboid-server/linux64/libsteam.so
-sudo sed -i 's|LD_PRELOAD="${LD_PRELOAD}:${JSIG}" ./ProjectZomboid64 "$@"|LD_PRELOAD="${LD_PRELOAD}:${JSIG}" ./ProjectZomboid64 -cachedir=/opt/zomboid-server "$@"|' /opt/zomboid-server/start-server.sh
 
 # Let the user define which zomboid version to install
 read -p "do you want to run a beta branch? (y/n) otherwise, current release will be used: " use_beta
@@ -83,7 +82,7 @@ Environment="LD_LIBRARY_PATH=/opt/zomboid-server/linux64:/opt/zomboid-server/nat
 Environment="BOX64_JVM=1"
 Environment="BOX64_DYNAREC_BIGBLOCK=0"
 Environment="BOX64_DYNAREC_STRONGMEM=1"
-ExecStart=/usr/local/bin/box64 /opt/zomboid-server/jre64/bin/java -Djava.awt.headless=true -Xms4g -Xmx16g -XX:ActiveProcessorCount=4 -Dzomboid.steam=1 -Dzomboid.znetlog=1 -Djava.library.path=linux64/:natives/ -Djava.security.egd=file:/dev/urandom -XX:+UseSerialGC -XX:-UseCompressedOops -XX:TieredStopAtLevel=1 -cp "java/:java/projectzomboid.jar" zombie.network.GameServer
+ExecStart=/usr/local/bin/box64 /opt/zomboid-server/jre64/bin/java -Dzomboid.cachedir=/opt/zomboid-server -Djava.awt.headless=true -Xms4g -Xmx16g -XX:ActiveProcessorCount=4 -Dzomboid.steam=1 -Dzomboid.znetlog=1 -Djava.library.path=linux64/:natives/ -Djava.security.egd=file:/dev/urandom -XX:+UseSerialGC -XX:-UseCompressedOops -XX:TieredStopAtLevel=1 -cp "java/:java/projectzomboid.jar" zombie.network.GameServer
 
 Restart=always
 RestartSec=10
