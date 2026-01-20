@@ -1,4 +1,7 @@
 #!/bin/bash
+groupadd zomboid
+useradd -r -g zomboid -d /opt/zomboid -s /usr/sbin/nologin zomboid
+mkdir /opt/zomboid
 
 # Install java / dependencies
 sudo apt update && sudo apt full-upgrade -y
@@ -43,12 +46,8 @@ curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.g
 ############################################################################################
 #################### download and install zomboid server version ####################
 ############################################################################################
-sudo mkdir -p /opt/zomboid-server/
-sudo chown -R $USER:$USER /opt/zomboid-server/
-
 # Fix up some dependencies and paths for server files
-sudo ln -sf /opt/zomboid-server/linux64/steamclient.so /opt/zomboid-server/linux64/libsteam.so
-sed -i 's|LD_PRELOAD="${LD_PRELOAD}:${JSIG}" ./ProjectZomboid64 "$@"|LD_PRELOAD="${LD_PRELOAD}:${JSIG}" ./ProjectZomboid64 -cachedir=/opt/zomboid-server "$@"|' /opt/zomboid-server/start-server.sh
+sudo ln -sf /opt/zomboid/linux64/steamclient.so /opt/zomboid/linux64/libsteam.so
 
 # Let the user define which zomboid version to install
 read -p "do you want to run a beta branch? (y/n) otherwise, current release will be used: " use_beta
@@ -56,17 +55,19 @@ if [[ "$use_beta" =~ ^[Yy]$ ]]; then
     read -p 'Please specify the version (i.e. 42.13.3), otherwise "unstable" will be used: ' beta_version
     beta_version=${beta_version:-unstable}
     echo "installing beta $beta_version"
-    ./steamcmd.sh +force_install_dir /opt/zomboid-server/ +@sSteamCmdForcePlatformType linux +login anonymous +app_update 380870 -beta "$beta_version" validate +quit > /dev/null
+    ./steamcmd.sh +force_install_dir /opt/zomboid/ +@sSteamCmdForcePlatformType linux +login anonymous +app_update 380870 -beta "$beta_version" validate +quit > /dev/null
 else
     echo "installing current release"
-    ./steamcmd.sh +force_install_dir /opt/zomboid-server/ +@sSteamCmdForcePlatformType linux +login anonymous +app_update 380870 validate +quit > /dev/null
+    ./steamcmd.sh +force_install_dir /opt/zomboid/ +@sSteamCmdForcePlatformType linux +login anonymous +app_update 380870 validate +quit > /dev/null
 fi
 ############################################################################################
 ############################################################################################
 
-
 # Prompt user for manual config
 read -p "Please, without interrupting this script, start the server manually in another terminal and set the password. Press Enter when that's done..."
+
+# set up permissions
+chown -R zomboid:zomboid /opt/zomboid/
 
 # Set up zomboid as a systemd service
 sudo tee /etc/systemd/system/zomboid-server.service > /dev/null <<EOL
@@ -75,15 +76,16 @@ Description=Project Zomboid Server
 After=network.target
 
 [Service]
-User=$(whoami)
-WorkingDirectory=/opt/zomboid-server
+User=zomboid
+Group=zomboid
+WorkingDirectory=/opt/zomboid/
 
 # IMPORTANT: force data directory + prevent LD_PRELOAD issues
-Environment="LD_LIBRARY_PATH=/opt/zomboid-server/linux64:/opt/zomboid-server/natives:/opt/zomboid-server/jre64/lib:."
+Environment="LD_LIBRARY_PATH=/opt/zomboid/linux64:/opt/zomboid-server/natives:/opt/zomboid/jre64/lib:."
 Environment="BOX64_JVM=1"
 Environment="BOX64_DYNAREC_BIGBLOCK=0"
 Environment="BOX64_DYNAREC_STRONGMEM=1"
-ExecStart=/usr/local/bin/box64 /opt/zomboid-server/jre64/bin/java -Dzomboid.cachedir=/opt/zomboid-server -Djava.awt.headless=true -Xms4g -Xmx16g -XX:ActiveProcessorCount=4 -Dzomboid.steam=1 -Dzomboid.znetlog=1 -Djava.library.path=linux64/:natives/ -Djava.security.egd=file:/dev/urandom -XX:+UseSerialGC -XX:-UseCompressedOops -XX:TieredStopAtLevel=1 -cp "java/:java/projectzomboid.jar" zombie.network.GameServer
+ExecStart=/usr/local/bin/box64 /opt/zomboid/jre64/bin/java -Djava.awt.headless=true -Xms4g -Xmx16g -XX:ActiveProcessorCount=4 -Dzomboid.steam=1 -Dzomboid.znetlog=1 -Djava.library.path=linux64/:natives/ -Djava.security.egd=file:/dev/urandom -XX:+UseSerialGC -XX:-UseCompressedOops -XX:TieredStopAtLevel=1 -cp "java/:java/projectzomboid.jar" zombie.network.GameServer
 
 Restart=always
 RestartSec=10
